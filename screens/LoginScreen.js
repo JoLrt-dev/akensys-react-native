@@ -8,7 +8,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import Toast from "react-native-toast-message";
 import axios from "axios";
 
 // TODO: Ne pas oublier d'importer la méthode onLogin de App.js pour gérer la redirection si user loggé
@@ -17,9 +16,14 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   const handleInputChange = (email, password) => {
     setIsDisabled(email === "" || password === "");
+  };
+
+  const handleInputFocus = () => {
+    setIsError(false);
   };
 
   const handleLogin = async () => {
@@ -32,37 +36,45 @@ export default function LoginScreen() {
         throw new Error("Identifiants invalides");
       }
       const token = response.data.token;
+      console.log("token ; ", token);
       // TODO:Appel de la fonction onLogin avec le token
     } catch (error) {
-      console.error("Erreur lors de la connexion : ", error.message);
-      // Gerer les erreurs de connexion ici
+      console.error("Erreur lors de la connexion : ", error);
+      setIsError(true);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.formContainer}>
-        <Text style={styles.title}>Connectez-vous à votre espace myoty</Text>
+        <Text style={styles.title}>Connectez-vous à votre espace MyOTY</Text>
         <TextInput
-          style={[styles.input, { alignSelf: "center" }]} // Ajouter alignSelf: 'center'
+          style={[styles.input, isError && styles.errorInput]}
           placeholder="Email"
           value={email}
           onChangeText={(text) => {
             setEmail(text);
             handleInputChange(text, password);
           }}
+          onFocus={handleInputFocus}
           keyboardType="email-address"
         />
         <TextInput
-          style={[styles.input, { alignSelf: "center" }]} // Ajouter alignSelf: 'center'
+          style={[styles.input, isError && styles.errorInput]}
           placeholder="Password"
           value={password}
           onChangeText={(text) => {
             setPassword(text);
             handleInputChange(email, text);
           }}
+          onFocus={handleInputFocus}
           secureTextEntry
         />
+        {isError && (
+          <Text style={styles.errorMessage}>
+            Identifiants invalides. Veuillez réessayer.
+          </Text>
+        )}
         <View style={styles.buttonContainer}>
           <Button title="Login" onPress={handleLogin} disabled={isDisabled} />
         </View>
@@ -98,6 +110,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 16,
     width: "100%",
+    alignSelf: "center",
+  },
+  errorInput: {
+    borderColor: "red",
+  },
+  errorMessage: {
+    color: "red",
+    marginBottom: 20,
   },
   buttonContainer: {
     marginTop: 24,
