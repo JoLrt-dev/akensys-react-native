@@ -37,13 +37,8 @@ export default function LoginScreen({ onLogin }) {
         throw new Error("Identifiants invalides");
       }
       const token = response.data.token;
-      try {
-        await AsyncStorage.setItem("token", token);
-        onLogin();
-      } catch (error) {
-        console.error("Erreur lors de l'enregistrement du token:", error);
-      }
-      // TODO:Appel de la fonction onLogin avec le token
+      console.log("coucou token", token);
+      onLogin(token); // Stocker le token en mémoire
     } catch (error) {
       console.error("Erreur lors de la connexion : ", error);
       setIsError(true);
