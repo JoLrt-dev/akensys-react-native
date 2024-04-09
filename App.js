@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import AppNavigator from "./navigation/AppNavigator";
+import LoginScreen from "./screens/LoginScreen";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Hello world</Text>
-      <Text>slut la test</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <LoginScreen />
+      <AppNavigator />
+    </NavigationContainer>
   );
 }
 
