@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Dimensions,
@@ -8,11 +8,12 @@ import {
   TextInput,
   View,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 // TODO: Ne pas oublier d'importer la méthode onLogin de App.js pour gérer la redirection si user loggé
 
-export default function LoginScreen() {
+export default function LoginScreen({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
@@ -36,7 +37,12 @@ export default function LoginScreen() {
         throw new Error("Identifiants invalides");
       }
       const token = response.data.token;
-      console.log("token ; ", token);
+      try {
+        await AsyncStorage.setItem("token", token);
+        onLogin();
+      } catch (error) {
+        console.error("Erreur lors de l'enregistrement du token:", error);
+      }
       // TODO:Appel de la fonction onLogin avec le token
     } catch (error) {
       console.error("Erreur lors de la connexion : ", error);
