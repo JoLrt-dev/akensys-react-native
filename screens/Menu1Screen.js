@@ -7,6 +7,7 @@ const Menu1Screen = ({ token }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  //Effectuer la requête API au montage du composant. Le token est en prop du component
   useEffect(() => {
     const fetchNetworkInfo = async () => {
       try {
@@ -29,6 +30,7 @@ const Menu1Screen = ({ token }) => {
     fetchNetworkInfo();
   }, [token]);
 
+  // Message de chargement si latence avec l'appel API
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -36,7 +38,7 @@ const Menu1Screen = ({ token }) => {
       </View>
     );
   }
-
+  // Message d'erreur si retourné KO par l'API
   if (error) {
     return (
       <View style={styles.container}>
@@ -44,13 +46,14 @@ const Menu1Screen = ({ token }) => {
       </View>
     );
   }
-
+  // Succès
   return (
     <View style={styles.container}>
-      <Text>Menu1</Text>
-      {networkInfo && (
-        <Text>Le nom du network est : {networkInfo[0].network.libelle}</Text>
-      )}
+      <Text>
+        {networkInfo && (
+          <Text>Le nom du network est : {networkInfo[0].network.libelle}</Text>
+        )}
+      </Text>
     </View>
   );
 };
