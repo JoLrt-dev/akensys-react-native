@@ -3,33 +3,21 @@ import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./navigation/AppNavigator";
 import LoginScreen from "./screens/LoginScreen";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(null);
 
-  useEffect(() => {
-    checkLoginStatus();
-  }, []);
-
-  const checkLoginStatus = async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-      if (token) {
-        setIsLoggedIn(true);
-      }
-    } catch (error) {
-      console.error("Erreur lors de la récupération du token:", error);
-    }
-  };
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
+  const handleLogin = (newToken) => {
+    setToken(newToken);
   };
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? <AppNavigator /> : <LoginScreen onLogin={handleLogin} />}
+      {token ? (
+        <AppNavigator token={token} />
+      ) : (
+        <LoginScreen onLogin={handleLogin} />
+      )}
     </NavigationContainer>
   );
 }
